@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const githubUrl = "https://github.com/pseudozach/zapcast.live";
+const githubUrl = "https://github.com/pseudozach/zapcast";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
