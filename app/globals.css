@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #05080b;
+  --foreground: #edf7f8;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--background); }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+::selection { background: rgba(103, 232, 249, .28); color: white; }
+
+.font-display { font-family: var(--font-space), sans-serif; }
+
+.page-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
+}
+
+.text-gradient {
+  background: linear-gradient(105deg, #ffffff 20%, #a5f3fc 60%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass-highlight { position: relative; overflow: hidden; }
+.glass-highlight::before {
+  content: "";
+  position: absolute;
+  inset: 0 18% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent);
+}
+
+.network-line {
+  stroke-dasharray: 5 8;
+  animation: dash 18s linear infinite;
+}
+
+@keyframes dash { to { stroke-dashoffset: -160; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
