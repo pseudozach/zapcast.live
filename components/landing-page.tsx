@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Activity, ArrowDown, ArrowRight, Box, Braces, Check, CircleDollarSign,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { SiteLogo } from "@/components/site-logo";
 import { cn } from "@/lib/utils";
 
 const githubUrl = "https://github.com/pseudozach/zapcast";
@@ -22,12 +22,8 @@ const fadeUp = {
   transition: { duration: 0.55 },
 };
 
-function Logo() {
-  return <a href="#top" className="flex items-center gap-2.5 font-display font-semibold tracking-tight text-white"><Image src="/android-chrome-192x192.png" alt="" width={36} height={36} className="size-9 rounded-lg" priority /><span>ZapCast</span></a>;
-}
-
 function Navbar() {
-  return <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[.06] bg-[#05080b]/75 backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8"><Logo /><nav className="hidden items-center gap-7 text-sm text-slate-400 md:flex"><a className="transition hover:text-white" href="#how-it-works">How it works</a><a className="transition hover:text-white" href="#technology">Technology</a><a className="transition hover:text-white" href="#mvp">Desktop app</a></nav><div className="flex items-center gap-2"><Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><a href={githubUrl} target="_blank" rel="noreferrer"><Github />GitHub</a></Button><Button asChild size="sm"><a href="/download"><Download />Download</a></Button></div></div></header>;
+  return <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[.06] bg-[#05080b]/75 backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8"><SiteLogo href="#top" /><nav className="hidden items-center gap-7 text-sm text-slate-400 md:flex"><a className="transition hover:text-white" href="#how-it-works">How it works</a><a className="transition hover:text-white" href="#technology">Technology</a><a className="transition hover:text-white" href="#mvp">Desktop app</a></nav><div className="flex items-center gap-2"><Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><a href={githubUrl} target="_blank" rel="noreferrer"><Github />GitHub</a></Button><Button asChild size="sm"><a href="/download"><Download />Download</a></Button></div></div></header>;
 }
 
 function NetworkBackground() {
@@ -98,6 +94,6 @@ export function LandingPage() {
     <section className="mx-auto max-w-7xl px-5 py-28 lg:px-8 lg:py-36"><SectionHeading eyebrow="Inside the app" title="One desktop app. Every role in the network." body="Go live, join a stream, inspect relay health, and manage earnings from the same focused interface." /><div className="mt-14 grid gap-5 md:grid-cols-3"><ScreenshotPlaceholder variant={0} icon={MonitorPlay} title="Streamer dashboard" subtitle="Ingest, stream health, and audience activity" /><ScreenshotPlaceholder variant={1} icon={Activity} title="Viewer relay stats" subtitle="Chunk flow, peers, and contribution" /><ScreenshotPlaceholder variant={2} icon={Wallet} title="Wallet and earnings" subtitle="Tips, relay rewards, and forwarding" /></div></section>
     <section id="mvp" className="border-y border-white/[.06]"><div className="mx-auto grid max-w-7xl gap-14 px-5 py-24 lg:grid-cols-2 lg:px-8 lg:py-32"><SectionHeading eyebrow="Available now" title="Live today as a working desktop MVP." body="The core network loop is running end-to-end: broadcast, discover, watch, relay, and pay. Built to be tested, measured, and improved in the open." /><motion.div {...fadeUp} className="grid gap-3 sm:grid-cols-2">{["RTMP input works","Shareable stream IDs","Viewer relaying","Arc wallet generation","Broadcaster tips","JSON debug reports"].map((x)=><Card key={x} className="flex items-center gap-3 px-4 py-4"><span className="grid size-6 place-items-center rounded-full bg-emerald-400/10"><Check className="size-3.5 text-emerald-300" /></span><span className="text-sm text-slate-300">{x}</span></Card>)}</motion.div></div></section>
     <CTASection />
-    <footer className="border-t border-white/[.06]"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 py-8 sm:flex-row lg:px-8"><Logo /><p className="text-center text-xs text-slate-600">Peer-to-peer distribution. Creator-owned relationships.</p><div className="flex gap-5 text-xs text-slate-500"><a className="hover:text-white" href={githubUrl}>GitHub</a><a className="hover:text-white" href="#technology">Architecture</a><a className="hover:text-white" href="/download">Download</a></div></div></footer>
+    <footer className="border-t border-white/[.06]"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 py-8 sm:flex-row lg:px-8"><SiteLogo href="#top" /><p className="text-center text-xs text-slate-600">Peer-to-peer distribution. Creator-owned relationships.</p><div className="flex gap-5 text-xs text-slate-500"><a className="hover:text-white" href={githubUrl}>GitHub</a><a className="hover:text-white" href="#technology">Architecture</a><a className="hover:text-white" href="/download">Download</a></div></div></footer>
   </main>;
 }

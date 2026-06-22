@@ -53,7 +53,9 @@ app/
   globals.css             Global theme, effects, and Tailwind import
   layout.tsx              Root layout and site metadata
   page.tsx                Landing-page route
+  download/page.tsx       Platform-aware desktop download route
 components/
+  download-page.tsx       Download cards and platform detection
   landing-page.tsx        Reusable landing-page sections and visuals
   ui/                     shadcn-style UI primitives
 lib/
