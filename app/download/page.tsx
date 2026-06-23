@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Download the latest ZapCast desktop app for Apple Silicon, Intel Mac, Windows, or Linux.",
 };
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const owner = "pseudozach";
 const repo = "zapcast";
