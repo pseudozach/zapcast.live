@@ -95,6 +95,16 @@ ZAPCAST_RELEASE_TAG=v0.2.0
 
 Remove that variable to return to automatic latest-release behavior.
 
+### macOS quarantine note
+
+On macOS, if the installed app is blocked by Apple quarantine after copying it to `/Applications`, remove the quarantine attribute:
+
+```bash
+xattr -rd com.apple.quarantine /Applications/ZapCast.app
+```
+
+Then launch ZapCast again from `/Applications`.
+
 ## Deployment
 
 The site is ready for Vercel with no custom build configuration.
