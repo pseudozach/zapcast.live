@@ -66,13 +66,34 @@ The landing page is implemented as a single route and assembled from reusable co
 
 ## Links and downloads
 
-GitHub links point to this repository. Download buttons currently point to `/download`; connect that route to the desktop app release page or download service when release artifacts are available.
-
-The canonical links are defined in `components/landing-page.tsx`:
+GitHub links on the landing page point to this repository:
 
 ```ts
 const githubUrl = "https://github.com/pseudozach/zapcast.live";
 ```
+
+The `/download` route pulls release metadata from the ZapCast desktop app repository at runtime/build time using the GitHub Releases API:
+
+```text
+https://api.github.com/repos/pseudozach/zapcast/releases/latest
+```
+
+By default it shows GitHub's latest non-draft, non-prerelease release and maps the release assets by filename:
+
+- `*arm64.dmg` for macOS Apple Silicon
+- `*x64.dmg` for macOS Intel
+- `*Setup.exe` for Windows
+- `*x64.AppImage` for Linux
+
+The route is cached with ISR and revalidates every hour on Vercel. If GitHub is temporarily unavailable, the page falls back to the last known `v0.2.0` links.
+
+To pin the page to a specific release instead of auto-following latest, set one environment variable in Vercel:
+
+```bash
+ZAPCAST_RELEASE_TAG=v0.2.0
+```
+
+Remove that variable to return to automatic latest-release behavior.
 
 ## Deployment
 
@@ -99,7 +120,7 @@ ZapCast is presented as a working desktop MVP and a product vision for unstoppab
 
 - Do not claim production scale, anonymity, or complete censorship resistance.
 - Explain resilience as peer-to-peer replication without traditional CDN dependency.
-- Treat Arc Testnet USDC as testnet functionality.
+- Describe Arc wallet functionality accurately without overclaiming production payment guarantees.
 - Distinguish current functionality from future payment integrations.
 
 ## License

@@ -19,55 +19,53 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-type PlatformId = "mac-arm" | "mac-intel" | "windows" | "linux";
+export type PlatformId = "mac-arm" | "mac-intel" | "windows" | "linux";
+
+export type DownloadAsset = {
+  name: string;
+  size: number;
+  url: string;
+};
+
+export type DownloadRelease = {
+  tagName: string;
+  releaseUrl: string;
+  assets: Partial<Record<PlatformId, DownloadAsset>>;
+};
 
 type DownloadOption = {
   id: PlatformId;
   name: string;
   detail: string;
-  file: string;
-  size: string;
-  url: string;
+  asset?: DownloadAsset;
   icon: ComponentType<{ className?: string }>;
 };
 
-const releaseUrl = "https://github.com/pseudozach/zapcast/releases";
+const fallbackReleaseUrl = "https://github.com/pseudozach/zapcast/releases";
 
-const downloads: DownloadOption[] = [
+const optionMeta: Array<Omit<DownloadOption, "asset">> = [
   {
     id: "mac-arm",
     name: "macOS",
     detail: "Apple Silicon",
-    file: "ZapCast-0.1.0-arm64.dmg",
-    size: "187.6 MB",
-    url: "https://github.com/pseudozach/zapcast/releases/download/v0.1.0/ZapCast-0.1.0-arm64.dmg",
     icon: Apple,
   },
   {
     id: "mac-intel",
     name: "macOS",
     detail: "Intel",
-    file: "ZapCast-0.1.0-x64.dmg",
-    size: "192.0 MB",
-    url: "https://github.com/pseudozach/zapcast/releases/download/v0.1.0/ZapCast-0.1.0-x64.dmg",
     icon: Apple,
   },
   {
     id: "windows",
     name: "Windows",
     detail: "64-bit installer",
-    file: "ZapCastSetup.exe",
-    size: "212.3 MB",
-    url: "https://github.com/pseudozach/zapcast/releases/download/v0.1.0/ZapCastSetup.exe",
     icon: Monitor,
   },
   {
     id: "linux",
     name: "Linux",
     detail: "x64 AppImage",
-    file: "ZapCast-0.1.0-x64.AppImage",
-    size: "197.9 MB",
-    url: "https://github.com/pseudozach/zapcast/releases/download/v0.1.0/ZapCast-0.1.0-x64.AppImage",
     icon: Terminal,
   },
 ];
@@ -90,14 +88,23 @@ function detectPlatform(): PlatformId | null {
   return null;
 }
 
-function DownloadCard({ option, recommended }: { option: DownloadOption; recommended: boolean }) {
+function formatBytes(bytes?: number) {
+  if (!bytes) return "Size listed on GitHub";
+
+  const mb = bytes / 1024 / 1024;
+  return `${mb.toFixed(1)} MB`;
+}
+
+function DownloadCard({ option, recommended, index }: { option: DownloadOption; recommended: boolean; index: number }) {
   const Icon = option.icon;
+  const asset = option.asset;
+  const unavailable = !asset;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: downloads.indexOf(option) * 0.06 }}
+      transition={{ duration: 0.45, delay: index * 0.06 }}
     >
       <Card
         className={cn(
@@ -105,9 +112,10 @@ function DownloadCard({ option, recommended }: { option: DownloadOption; recomme
           recommended
             ? "border-cyan-300/35 bg-cyan-300/[.075] shadow-[0_0_50px_rgba(34,211,238,.09)]"
             : "hover:-translate-y-1 hover:border-white/20 hover:bg-white/[.05]",
+          unavailable && "opacity-60",
         )}
       >
-        {recommended && (
+        {recommended && !unavailable && (
           <span className="absolute right-4 top-4 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.13em] text-cyan-200">
             Recommended
           </span>
@@ -120,21 +128,28 @@ function DownloadCard({ option, recommended }: { option: DownloadOption; recomme
           <p className="mt-1 text-sm text-slate-400">{option.detail}</p>
         </div>
         <div className="mt-8 border-t border-white/[.07] pt-5">
-          <p className="truncate font-mono text-[11px] text-slate-500">{option.file}</p>
-          <p className="mt-1 text-[11px] text-slate-600">v0.1.0 · {option.size}</p>
+          <p className="truncate font-mono text-[11px] text-slate-500">{asset?.name ?? "No installer found"}</p>
+          <p className="mt-1 text-[11px] text-slate-600">{formatBytes(asset?.size)}</p>
         </div>
-        <Button asChild variant={recommended ? "default" : "outline"} className="mt-6 w-full">
-          <a href={option.url}>
-            <Download /> Download
-          </a>
-        </Button>
+        {asset ? (
+          <Button asChild variant={recommended ? "default" : "outline"} className="mt-6 w-full">
+            <a href={asset.url}>
+              <Download /> Download
+            </a>
+          </Button>
+        ) : (
+          <Button disabled variant="outline" className="mt-6 w-full">
+            <Download /> Unavailable
+          </Button>
+        )}
       </Card>
     </motion.div>
   );
 }
 
-export function DownloadPage() {
+export function DownloadPage({ release }: { release: DownloadRelease }) {
   const [platform, setPlatform] = useState<PlatformId | null>(null);
+  const downloads = optionMeta.map((option) => ({ ...option, asset: release.assets[option.id] }));
 
   useEffect(() => {
     const detected = detectPlatform();
@@ -175,7 +190,7 @@ export function DownloadPage() {
         >
           <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-300/15 bg-cyan-300/[.06] px-3 py-1.5 text-xs text-cyan-100">
             <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_9px_#34d399]" />
-            Desktop release v0.1.0
+            Desktop release {release.tagName}
           </div>
           <h1 className="text-gradient font-display text-5xl font-semibold tracking-[-.055em] sm:text-7xl">
             Download ZapCast.
@@ -186,8 +201,8 @@ export function DownloadPage() {
         </motion.div>
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {downloads.map((option) => (
-            <DownloadCard key={option.id} option={option} recommended={platform === option.id} />
+          {downloads.map((option, index) => (
+            <DownloadCard key={option.id} option={option} recommended={platform === option.id} index={index} />
           ))}
         </div>
 
@@ -203,7 +218,7 @@ export function DownloadPage() {
             <span className="flex items-center gap-2"><Check className="size-3.5 text-cyan-300" />No account required to install</span>
           </div>
           <a
-            href={releaseUrl}
+            href={release.releaseUrl || fallbackReleaseUrl}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-cyan-200"
