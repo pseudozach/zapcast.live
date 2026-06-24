@@ -54,11 +54,16 @@ app/
   layout.tsx              Root layout and site metadata
   page.tsx                Landing-page route
   download/page.tsx       Platform-aware desktop download route
+  streams/page.tsx        Nostr NIP-53 ZapCast stream discovery
+  watch/[streamId]/page.tsx Browser viewer route
 components/
   download-page.tsx       Download cards and platform detection
   landing-page.tsx        Reusable landing-page sections and visuals
+  streams/                Nostr stream list UI
+  watch/                  MediaSource browser viewer UI
   ui/                     shadcn-style UI primitives
 lib/
+  nostr/                  Client-side Nostr discovery and stream parsing
   utils.ts                Shared class-name helper
 ```
 
@@ -114,7 +119,42 @@ The site is ready for Vercel with no custom build configuration.
 3. Use `npm run build` as the build command.
 4. Add `zapcast.live` under the project domains.
 
-No environment variables are currently required.
+For local browser-viewer testing against a local gateway:
+
+```bash
+cp .env.example .env.local
+NEXT_PUBLIC_ZAPCAST_GATEWAY_WS=ws://localhost:8787 npm run dev
+```
+
+For production, set:
+
+```bash
+NEXT_PUBLIC_ZAPCAST_GATEWAY_WS=wss://gateway.zapcast.live
+```
+
+The gateway is a separate long-running Node.js service intended to run on a VM. Keep Vercel only for the static/Next.js frontend; do not implement gateway streaming as a Next.js route and do not put WebSocket streaming in Vercel functions.
+
+Run the gateway locally:
+
+```bash
+cd services/zapcast-gateway
+npm install
+npm start
+```
+
+Run on a VM with pm2 or systemd, and put nginx or Caddy in front for TLS:
+
+```text
+gateway.zapcast.live -> localhost:8787
+```
+
+Known browser-viewer limitations:
+
+- Browser viewers do not relay.
+- Browser viewing is gateway-assisted.
+- Gateway bandwidth costs scale with browser viewers.
+- Use the desktop app for true P2P relaying and earning.
+- This is for demo and casual viewing, not production CDN scale.
 
 For another Node-compatible host:
 
